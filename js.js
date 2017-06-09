@@ -155,6 +155,7 @@ $(document).ready(function () {
         "items":[]
     };
     var out = '';
+    var orderCounter=0;
 
     $('#rezult').on('click', function(){
         order = {
@@ -179,6 +180,9 @@ $(document).ready(function () {
         out+='<p><b>Cумма заказа: </b>'+order.price+'</p>';
         out+='<p><b>Всего калорий: </b>'+order.cal+'</p>';
         $('#out').append(out);
+
+        ++orderCounter;
+        localStorage.setItem(orderCounter,order.price);
     });
 
     $('#clear').on('click', function(e){
@@ -194,8 +198,14 @@ $(document).ready(function () {
         $('input').attr('checked',false);
     });
 
+    var orderCounter=0;
 
-
+    // function toLocalStorage() {
+    //     ++orderCounter;
+    //     localStorage.setItem(orderCounter,order.sum);
+    //     delOrder();
+    // }
+    // toLocalStorage()
 
 });
 
