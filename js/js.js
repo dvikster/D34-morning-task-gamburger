@@ -181,7 +181,8 @@ $(document).ready(function () {
             out2 +='<p><b>Сумма среднего чека: </b>'+middleOrder+'</p>';
         }
         else if(s.length == 0) {
-            out2 +='Вы еще ничего не заказывали</p>';
+            out2 +='<span class="error">Вы еще ничего не заказывали</span></p>';
+
         }
         $('#out2').html(out2);
     });
