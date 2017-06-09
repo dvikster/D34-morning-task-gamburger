@@ -94,10 +94,10 @@ $(document).ready(function () {
         var dopComponent=[];
         for(key in componentGamburger) {
             if(componentGamburger[key].required == 1){
-            component += '<p><input type="checkbox" name="component" data-price="' +componentGamburger[key].price + '" data-cal="'+componentGamburger[key].cal +'" value="' + key + '">'+ key + ' - ' +componentGamburger[key].cal + 'кКал, ' +  +componentGamburger[key].price+'грн </p>';
+            component += '<p><input type="checkbox" name="component" class="required" data-price="' +componentGamburger[key].price + '" data-cal="'+componentGamburger[key].cal +'" value="' + key + '">'+ key + ' - ' +componentGamburger[key].cal + 'кКал, ' +  +componentGamburger[key].price+'грн </p>';
             }
             else if(componentGamburger[key].required == 0 ){
-            dopComponent += '<p><input type="checkbox" name="dop-component" data-price="' +componentGamburger[key].price + '" data-cal="'+componentGamburger[key].cal +'" value="' + key + '">'+ key + ' - ' +componentGamburger[key].cal + 'кКал, ' +  +componentGamburger[key].price+'грн </p>';
+            dopComponent += '<p><input type="checkbox" name="dop-component" data-required="0" data-price="' +componentGamburger[key].price + '" data-cal="'+componentGamburger[key].cal +'" value="' + key + '">'+ key + ' - ' +componentGamburger[key].cal + 'кКал, ' +  +componentGamburger[key].price+'грн </p>';
         }
         }
         $('#component').html(component);
@@ -114,7 +114,8 @@ $(document).ready(function () {
     var out = '';
     var orderCounter = 0;
 
-    $('#rezult').on('click', function(){
+    $('#rezult').on('click', function(event){
+        // console.log(event);
         order = {
             "price":0,
             "cal":0,
@@ -122,9 +123,13 @@ $(document).ready(function () {
         };
         out = '';
         $('#out').empty();
+        $('#error-size').empty();
+        $('#error-component').empty();
 
+        if($('input[type="radio"]:checked').length > 0 && $('input.required:checked').length > 0) {
 
-        $('input:checked').map( function (index,item) {
+            console.log('успех')
+            $('input:checked').map( function (index,item) {
 
             order.price = order.price + Number($(item).attr('data-price'));
             order.cal = order.cal + Number($(item).attr('data-cal'));
@@ -136,16 +141,30 @@ $(document).ready(function () {
             out+='</ul>';
             out+='<p><b>Cумма заказа: </b>'+order.price+'</p>';
             out+='<p><b>Всего калорий: </b>'+order.cal+'</p>';
-            $('#out').append(out);
+            $('#out').html(out);
 
             ++orderCounter;
         // console.log(orderCounter);
-        // localStorage.setItem(orderCounter,order.price);
+        localStorage.setItem(orderCounter,order.price);
+        }
+        else if($('input[type="radio"]:checked').length  ==  0 &&  $('input.required:checked').length  == 0){
 
+            $('#error-size').html("выберите размер<br>");
+            $('#error-component').html("выберите начинку<br>");
+        }
+        else if($('input[type="radio"]:checked').length == 0 ){
+
+            $('#error-size').html("выберите размер<br>");
+        }
+        else if( $('input.required:checked').length == 0){
+
+            $('#error-component').html("выберите начинку<br>");
+        }
     });
 
 
     $('#history').on('click', function(){
+
         var  out2='';
         s = localStorage;
         // console.log('кол-во заказов' + s.length);
@@ -155,12 +174,16 @@ $(document).ready(function () {
         }
         // console.log(sum);
         middleOrder = sum /s.length;
-        // console.log(middleOrder);
-        out2 +='<p><b>Кол-во заказов: </b>'+s.length+'</p>';
-        out2 +='<p><b>Общая сумма: </b>'+sum+'</p>';
-        out2 +='<p><b>Сумма среднего чека: </b>'+middleOrder+'</p>';
+        if (s.length > 0){
+            // console.log(middleOrder);
+            out2 +='<p><b>Кол-во заказов: </b>'+s.length+'</p>';
+            out2 +='<p><b>Общая сумма: </b>'+sum+'</p>';
+            out2 +='<p><b>Сумма среднего чека: </b>'+middleOrder+'</p>';
+        }
+        else if(s.length == 0) {
+            out2 +='Вы еще ничего не заказывали</p>';
+        }
         $('#out2').html(out2);
-
     });
 
     $('#clearRezult').on('click', function(event){
