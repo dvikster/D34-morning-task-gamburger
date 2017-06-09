@@ -69,9 +69,6 @@ var componentGamburger={
         "cal": 50,
         "required": 1
     },
-// };
-//
-// var dopComponentGamburger={
     "соус": {
         "price": 5,
         "cal": 0,
@@ -85,7 +82,6 @@ var componentGamburger={
 };
 
 
-
 $(document).ready(function () {
     function renderGamburger() {
         var size=[];
@@ -97,8 +93,6 @@ $(document).ready(function () {
         var component=[];
         var dopComponent=[];
         for(key in componentGamburger) {
-            console.log(componentGamburger[key].required)
-
             if(componentGamburger[key].required == 1){
             component += '<p><input type="checkbox" name="component" data-price="' +componentGamburger[key].price + '" data-cal="'+componentGamburger[key].cal +'" value="' + key + '">'+ key + ' - ' +componentGamburger[key].cal + 'кКал, ' +  +componentGamburger[key].price+'грн </p>';
             }
@@ -113,49 +107,12 @@ $(document).ready(function () {
 
 
 
-
-    // function addFood() {
-    //     order.out+='';
-    //     $('#out').empty();
-    //     $('input:checked').map( function (index,el) {
-    //         order.sum = order.sum + Number($(el).attr('data-cost'));
-    //         order.ccal = order.sum + Number($(el).attr('data-ccal'));
-    //         order.items.push($(el).attr('value'));} );
-    //     console.log(order);
-    //     order.out+='<p><b>Состав заказа:</b></p><ol>';
-    //     for (var i=0; i<order.items.length; i++) {
-    //         order.out+='<li>'+order.items[i]+'</li>';
-    //     }
-    //     order.out+='</ol>';
-    //     order.out+='<p><b>Cумма заказа: </b>'+order.sum+'</p>';
-    //     order.out+='<p><b>Всего калорий: </b>'+order.ccal+'</p>';
-    //     $('#out').append(order.out);
-    // };
-    //
-    // function delOrder() {
-    //     order.sum = 0;
-    //     order.ccal = 0;
-    //     order.items = [];
-    //     order.out = '';
-    //     $('#out').empty();
-    //     $('input').attr('checked',false);
-    // }
-    //
-    // $('#addFood').on('click',addFood);
-    // $('#delOrder').on('click',delOrder);
-
-    // var order={
-    //     "price":0,
-    //     "cal":0,
-    //     "items":[]
-    // };
-
     var order = {"price":0,
         "cal":0,
         "items":[]
     };
     var out = '';
-    var orderCounter=0;
+    var orderCounter = 0;
 
     $('#rezult').on('click', function(){
         order = {
@@ -164,77 +121,57 @@ $(document).ready(function () {
             "items":[]
         };
         out = '';
-
         $('#out').empty();
 
-        $('input:checked').map( function (index,el) {
-            order.price = order.price + Number($(el).attr('data-price'));
-            order.cal = order.cal + Number($(el).attr('data-cal'));
-            order.items.push($(el).attr('value'));} );
-        console.log(order);
-        out +='<p><b>Состав заказа:</b></p><ol>';
-        for (var i=0; i<order.items.length; i++) {
-            out+='<li>'+order.items[i]+'</li>';
-        }
-        out+='</ol>';
-        out+='<p><b>Cумма заказа: </b>'+order.price+'</p>';
-        out+='<p><b>Всего калорий: </b>'+order.cal+'</p>';
-        $('#out').append(out);
 
-        ++orderCounter;
-        localStorage.setItem(orderCounter,order.price);
+        $('input:checked').map( function (index,item) {
+
+            order.price = order.price + Number($(item).attr('data-price'));
+            order.cal = order.cal + Number($(item).attr('data-cal'));
+            order.items.push($(item).attr('value'));} );
+            out +='<p><b>Состав заказа:</b></p><ul>';
+                for (var i=0; i<order.items.length; i++) {
+                    out+='<li>'+order.items[i]+'</li>';
+                }
+            out+='</ul>';
+            out+='<p><b>Cумма заказа: </b>'+order.price+'</p>';
+            out+='<p><b>Всего калорий: </b>'+order.cal+'</p>';
+            $('#out').append(out);
+
+            ++orderCounter;
+        // console.log(orderCounter);
+        // localStorage.setItem(orderCounter,order.price);
+
     });
 
-    $('#clear').on('click', function(e){
-        // e.preventionDefault();
+
+    $('#history').on('click', function(){
+        var  out2='';
+        s = localStorage;
+        // console.log('кол-во заказов' + s.length);
+        var sum = 0;
+        for (var i = 0; i < s.length; i++) { key = s.key(i);
+        sum = sum + Number(s.getItem(key));
+        }
+        // console.log(sum);
+        middleOrder = sum /s.length;
+        // console.log(middleOrder);
+        out2 +='<p><b>Кол-во заказов: </b>'+s.length+'</p>';
+        out2 +='<p><b>Общая сумма: </b>'+sum+'</p>';
+        out2 +='<p><b>Сумма среднего чека: </b>'+middleOrder+'</p>';
+        $('#out2').html(out2);
+
+    });
+
+    $('#clearRezult').on('click', function(event){
+        event.preventDefault();
         renderGamburger();
         $('#out').empty();
-        order = {
-            "price":0,
-            "cal":0,
-            "items":[]
-        };
-        out = '';
-        $('input').attr('checked',false);
     });
 
-    var orderCounter=0;
-
-    // function toLocalStorage() {
-    //     ++orderCounter;
-    //     localStorage.setItem(orderCounter,order.sum);
-    //     delOrder();
-    // }
-    // toLocalStorage()
-
+    $('#clearHistory').on('click', function(event){
+        event.preventDefault();
+        $('#out2').empty();
+    });
 });
-
-
-        //
-        // order
-        //
-        //
-        //
-        // order = $('input:checked').val();
-        //
-        // for(key in order){
-        //     orderItem += $(this).val() + ' ';
-        // }
-        //
-        // $('.price').html(orderItem);
-        //
-        // // $("input[type='checkbox']").is(':checked');
-        // // $("input[type='radio']").is(':checked');
-        // // var sizeItem = $(this).val();
-        // // var componentItem = $(this).val();
-        // // var dopComponentItem = $(this).val();
-        // console.log(orderItem);
-        // console.log(order);
-        // console.log($(this.checked).val());
-        // console.log($("input[type='radio']").is(':checked').val);
-
-
-        // console.log(size);
-        // console.log(component);
-        // console.log(dopComponent);
 
